@@ -18,8 +18,9 @@ namespace Core {
 
 		inline bool IsKeyPressed(SDL_Scancode key) const { return keysPressed[key] && !lastKeysPressed[key]; }
 		inline bool IsKeyReleased(SDL_Scancode key) const { return !keysPressed[key] && lastKeysPressed[key]; }
+		inline bool IsKeyHeld(SDL_Scancode key) const { return keysPressed[key]; }
 		inline bool ShouldQuit() const { return shouldQuit; }
-
+		
 	private:
 		EventManager();
 		~EventManager() = default;

@@ -9,6 +9,7 @@
 #include "utils.h"
 
 namespace Core {
+	// TODO: Components should be able to be deactivated/activated
 	struct Component {
 		Component() = default;
 		virtual ~Component() = default;
@@ -24,12 +25,14 @@ namespace Core {
 		Transform(Vec2f position = { 0, 0 }, Vec2f scale = { 1, 1 }, float rotation = 0.0f) : position(position), scale(scale), rotation(rotation) {}
 	};
 
+	// TODO: Future - SpriteRenderer with z-index should take place in ShapeRenderer
 	struct ShapeRenderer : public Component {
 		SDL_Color color;
 
 		ShapeRenderer(SDL_Color color = { 255, 255, 255, 255 }) : color(color) {}
 	};
 	
+	// TODO: GameObjects should be able to be deactivated/activated
 	class GameObject {
 	public:
 		// GameObject on default has Transform component
@@ -38,6 +41,7 @@ namespace Core {
 		};
 		virtual ~GameObject() = default;
 
+		// TODO: should GameObject have central Update system if it has a component system?
 		virtual void Update(float deltaTime) {};
 		void UpdateBase(float deltaTime) {
 			Update(deltaTime);
@@ -65,6 +69,7 @@ namespace Core {
 		}
 	
 	private:
+		// TODO: Should it be shared or unique ptr?
 		std::unordered_map<std::type_index, std::shared_ptr<Component>> m_components;
 	};
 }

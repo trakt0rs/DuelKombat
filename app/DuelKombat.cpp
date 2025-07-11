@@ -2,7 +2,7 @@
 
 namespace DK {
 	DuelKombat::DuelKombat() {
-
+		SetActiveScene(&fightScene);
 	}
 
 	DuelKombat::~DuelKombat() {

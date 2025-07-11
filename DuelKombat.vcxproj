@@ -101,10 +101,16 @@ xcopy /E /I /Y "$(ProjectDir)assets\" "$(OutDir)assets"</Command>
     <ClCompile Include="app\DuelKombat.cpp" />
     <ClCompile Include="core\Application.cpp" />
     <ClCompile Include="core\EventManager.cpp" />
+    <ClCompile Include="core\Renderer.cpp" />
+    <ClCompile Include="app\FightScene.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="app\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\DuelKombat.h" />
+    <ClInclude Include="app\FightScene.h" />
+    <ClInclude Include="app\Player.h" />
+    <ClInclude Include="core\Renderer.h" />
     <ClInclude Include="params.h" />
     <ClInclude Include="core\Application.h" />
     <ClInclude Include="core\EventManager.h" />

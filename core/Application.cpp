@@ -5,7 +5,7 @@
 #include "params.h"
 
 namespace Core {
-	Application::Application() : m_window(nullptr), m_renderer(nullptr), m_shouldQuit(true) {
+	Application::Application() : m_window(nullptr), m_renderer(nullptr), m_shouldQuit(true), m_activeScene(nullptr) {
 		// m_shouldQuit at the start is true before successful initialization
 		m_window = SDL_CreateWindow(Params::Window::title, Params::Window::width, Params::Window::height, SDL_WINDOW_HIDDEN);
 		if (!m_window) {
@@ -13,11 +13,7 @@ namespace Core {
 			return;
 		}
 
-		m_renderer = SDL_CreateRenderer(m_window, NULL);
-		if (!m_renderer) {
-			printf("Failed to create SDL_Renderer: %s\n", SDL_GetError());
-			return;
-		}
+		m_renderer = new Renderer(m_window);
 
 		// Init was a success
 		SDL_ShowWindow(m_window);
@@ -25,7 +21,7 @@ namespace Core {
 	}
 
 	Application::~Application() {
-		SDL_DestroyRenderer(m_renderer);
+		delete m_renderer;
 		SDL_DestroyWindow(m_window);
 	}
 
@@ -34,15 +30,17 @@ namespace Core {
 			Core::EventManager::GetInstance().PollEvents();
 
 			Update(0);
+			m_activeScene->UpdateBase(0);
+
+			m_renderer->RenderClear();
+			m_renderer->Render(m_activeScene->GetGameObjects());
+			m_renderer->RenderPresent();
 
 			m_shouldQuit = Core::EventManager::GetInstance().ShouldQuit();
 		}
 	}
 
-	void Application::M_Render() {
-		SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-		SDL_RenderClear(m_renderer);
-
-		SDL_RenderPresent(m_renderer);
+	void Application::SetActiveScene(Scene* scene) {
+		m_activeScene = scene;
 	}
 }

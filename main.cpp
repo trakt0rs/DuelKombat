@@ -2,7 +2,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include "app/Application.h"
+#include "app/DuelKombat.h"
 
 int main() {
 	if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -14,7 +14,7 @@ int main() {
 		return 1;
 	}
 
-	DK::Application duelKombat;
+	DK::DuelKombat duelKombat;
 	duelKombat.Run();
 
 	SDL_Quit();

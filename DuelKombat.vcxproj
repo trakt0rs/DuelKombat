@@ -98,15 +98,18 @@ xcopy /E /I /Y "$(ProjectDir)assets\" "$(OutDir)assets"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="app\Application.cpp" />
+    <ClCompile Include="app\DuelKombat.cpp" />
+    <ClCompile Include="core\Application.cpp" />
     <ClCompile Include="core\EventManager.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="app\Application.h" />
-    <ClInclude Include="app\params.h" />
+    <ClInclude Include="app\DuelKombat.h" />
+    <ClInclude Include="params.h" />
+    <ClInclude Include="core\Application.h" />
     <ClInclude Include="core\EventManager.h" />
     <ClInclude Include="core\GameObject.h" />
+    <ClInclude Include="core\Scene.h" />
     <ClInclude Include="core\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

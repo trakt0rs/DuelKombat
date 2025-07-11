@@ -4,7 +4,7 @@
 #include "core/EventManager.h"
 #include "params.h"
 
-namespace DK {
+namespace Core {
 	Application::Application() : m_window(nullptr), m_renderer(nullptr), m_shouldQuit(true) {
 		// m_shouldQuit at the start is true before successful initialization
 		m_window = SDL_CreateWindow(Params::Window::title, Params::Window::width, Params::Window::height, SDL_WINDOW_HIDDEN);
@@ -33,19 +33,15 @@ namespace DK {
 		while (!m_shouldQuit) {
 			Core::EventManager::GetInstance().PollEvents();
 
+			Update(0);
+
 			m_shouldQuit = Core::EventManager::GetInstance().ShouldQuit();
 		}
-	}
-
-	void Application::M_Update(float deltaTime) {
-
 	}
 
 	void Application::M_Render() {
 		SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
 		SDL_RenderClear(m_renderer);
-
-
 
 		SDL_RenderPresent(m_renderer);
 	}

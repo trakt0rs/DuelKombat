@@ -2,7 +2,7 @@
 
 #include <SDL3/SDL.h>
 
-namespace DK {
+namespace Core {
 
 	class Application {
 	public:
@@ -11,8 +11,10 @@ namespace DK {
 
 		void Run();
 
+	protected:
+		virtual void Update(float deltaTime) = 0;
+
 	private:
-		void M_Update(float deltaTime);
 		void M_Render();
 
 	private:

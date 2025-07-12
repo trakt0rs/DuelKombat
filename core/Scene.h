@@ -12,7 +12,8 @@ namespace Core {
 		void UpdateBase(float deltaTime) {
 			Update(deltaTime);
 			for (GameObject* obj : m_gameObjects) {
-				obj->Update(deltaTime);
+				if(obj->active)
+					obj->Update(deltaTime);
 			}
 		}
 

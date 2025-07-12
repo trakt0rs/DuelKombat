@@ -2,12 +2,16 @@
 
 #include <iostream>
 
+#include "AssetManager.h"
+
 namespace Core {
 	Renderer::Renderer(SDL_Window* window) {
 		m_renderer = SDL_CreateRenderer(window, NULL);
 		if (!m_renderer) {
 			std::cout << SDL_GetError() << std::endl;
 		}
+
+		AssetManager::GetInstance().Init(m_renderer);
 	}
 
 	Renderer::~Renderer() {
@@ -21,17 +25,25 @@ namespace Core {
 
 	void Renderer::Render(const std::vector<GameObject*>& gameObjects) const {
 		for (const auto& gameObject : gameObjects) {
-			ShapeRenderer* shapeRenderer = gameObject->GetComponent<ShapeRenderer>();
-			if (shapeRenderer != nullptr) {
+			if (!gameObject->active) continue;
+			SpriteRenderer* spriteRenderer = gameObject->GetComponent<SpriteRenderer>();
+
+			if (spriteRenderer != nullptr) {
+				if (!spriteRenderer->active) continue;
 				Transform* transform = gameObject->GetComponent<Transform>();
 				SDL_FRect dstRect = {
 					transform->position.x,
 					transform->position.y,
-					transform->scale.x,
-					transform->scale.y
+					transform->scale.x * spriteRenderer->texture->textureSize.x,
+					transform->scale.y * spriteRenderer->texture->textureSize.y
 				};
-				SDL_SetRenderDrawColor(m_renderer, shapeRenderer->color.r, shapeRenderer->color.g, shapeRenderer->color.b, shapeRenderer->color.a);
-				SDL_RenderFillRect(m_renderer, &dstRect);
+
+				SDL_SetTextureColorMod(spriteRenderer->texture->texture, spriteRenderer->color.r, spriteRenderer->color.g, spriteRenderer->color.b);
+				SDL_SetTextureAlphaMod(spriteRenderer->texture->texture, spriteRenderer->color.a);
+
+				// TODO: Rotate sprite based on a pivot
+
+				SDL_RenderTexture(m_renderer, spriteRenderer->texture->texture, nullptr, &dstRect);
 			}
 		}
 	}

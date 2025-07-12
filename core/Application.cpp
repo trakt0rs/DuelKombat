@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "Application.h"
-#include "core/EventManager.h"
+#include "EventManager.h"
 #include "params.h"
 
 namespace Core {

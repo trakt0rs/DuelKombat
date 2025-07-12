@@ -2,7 +2,7 @@
 
 #include "core/Application.h"
 
-#include "FightScene.h"
+#include "scenes/FightScene.h"
 
 namespace DK {
 	class DuelKombat : public Core::Application {

@@ -37,5 +37,4 @@ namespace Core {
 
 		bool shouldQuit;
 	};
-
 }

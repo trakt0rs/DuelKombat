@@ -7,10 +7,13 @@
 #include <memory>
 
 #include "utils.h"
+#include "Texture.h"
 
 namespace Core {
-	// TODO: Components should be able to be deactivated/activated
-	struct Component {
+	class Component {
+	public:
+		bool active = true;	// Component gets updated only if its active and its GameObject is active
+
 		Component() = default;
 		virtual ~Component() = default;
 
@@ -25,28 +28,30 @@ namespace Core {
 		Transform(Vec2f position = { 0, 0 }, Vec2f scale = { 1, 1 }, float rotation = 0.0f) : position(position), scale(scale), rotation(rotation) {}
 	};
 
-	// TODO: Future - SpriteRenderer with z-index should take place in ShapeRenderer
-	struct ShapeRenderer : public Component {
+	// TODO: Future - SpriteRenderer should have z-index
+	struct SpriteRenderer : public Component {
 		SDL_Color color;
+		Texture* texture;
 
-		ShapeRenderer(SDL_Color color = { 255, 255, 255, 255 }) : color(color) {}
+		SpriteRenderer(Texture* texture = nullptr, SDL_Color color = { 255, 255, 255, 255 }) : color(color), texture(texture) {}
 	};
 	
-	// TODO: GameObjects should be able to be deactivated/activated
 	class GameObject {
 	public:
-		// GameObject on default has Transform component
+		bool active = true;	// GameObject gets updated only if its active
+
 		GameObject() {
-			AddComponent<Transform>();
+			AddComponent<Transform>(); // GameObject on default has Transform component
 		};
 		virtual ~GameObject() = default;
 
-		// TODO: should GameObject have central Update system if it has a component system?
+		// TODO: Should GameObject have central client side Update if it has a component system?
 		virtual void Update(float deltaTime) {};
 		void UpdateBase(float deltaTime) {
 			Update(deltaTime);
 			for (auto& [type, component] : m_components) {
-				component->Update(deltaTime);
+				if(component->active)
+					component->Update(deltaTime);
 			}
 		}
 
@@ -55,8 +60,8 @@ namespace Core {
 			std::type_index type = typeid(T);
 			if (m_components.contains(type)) return nullptr;
 
-			m_components[type] = std::make_shared<T>(std::forward<Args>(args)...);
-			return std::static_pointer_cast<T>(m_components[type]).get();
+			m_components[type] = std::make_unique<T>(std::forward<Args>(args)...);
+			return static_cast<T*>(m_components[type].get());
 		}
 
 		template<typename T>
@@ -65,11 +70,10 @@ namespace Core {
 			if (it == m_components.end()) {
 				return nullptr;
 			}
-			return std::static_pointer_cast<T>(it->second).get();
+			return static_cast<T*>(it->second.get());
 		}
 	
 	private:
-		// TODO: Should it be shared or unique ptr?
-		std::unordered_map<std::type_index, std::shared_ptr<Component>> m_components;
+		std::unordered_map<std::type_index, std::unique_ptr<Component>> m_components;
 	};
 }

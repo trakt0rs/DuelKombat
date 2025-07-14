@@ -1,5 +1,7 @@
 #include "DuelKombat.h"
 
+#include <iostream>
+
 namespace DK {
 	DuelKombat::DuelKombat() {
 		SetActiveScene(&fightScene);
@@ -10,6 +12,6 @@ namespace DK {
 	}
 
 	void DuelKombat::Update(float deltaTime) {
-
+		std::cout << 1.0f / deltaTime << std::endl;
 	}
 }

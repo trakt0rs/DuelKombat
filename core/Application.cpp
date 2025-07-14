@@ -26,15 +26,30 @@ namespace Core {
 	}
 
 	void Application::Run() {
+		uint64_t lastCounter = SDL_GetPerformanceCounter();
+
+		const float targetFrameTime = 1.0f / Params::Window::targetFPS;
+
 		while (!m_shouldQuit) {
+			uint64_t nowCounter = SDL_GetPerformanceCounter();
+			float deltaTime = static_cast<float>(nowCounter - lastCounter) / static_cast<float>(SDL_GetPerformanceFrequency());
+			lastCounter = nowCounter;
+
 			Core::EventManager::GetInstance().PollEvents();
 
-			Update(0);
-			m_activeScene->UpdateBase(0);
+			Update(deltaTime);
+			m_activeScene->UpdateBase(deltaTime);
 
 			m_renderer->RenderClear();
 			m_renderer->Render(m_activeScene->GetGameObjects());
 			m_renderer->RenderPresent();
+
+			// Delay to maintain target FPS
+			float frameTime = static_cast<float>(SDL_GetPerformanceCounter() - nowCounter) / SDL_GetPerformanceFrequency();
+			if (frameTime < targetFrameTime) {
+				float delayTime = (targetFrameTime - frameTime) * 1'000'000'000.0f;
+				SDL_DelayPrecise(static_cast<uint32_t>(delayTime));
+			}
 
 			m_shouldQuit = Core::EventManager::GetInstance().ShouldQuit();
 		}

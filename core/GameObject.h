@@ -10,14 +10,20 @@
 #include "Texture.h"
 
 namespace Core {
+	class GameObject;
+
 	class Component {
 	public:
 		bool active = true;	// Component gets updated only if its active and its GameObject is active
 
-		Component() = default;
+		Component() = delete; // Prevent accidental usage
+		Component(GameObject* parentObj) : parentObj(parentObj) {}
 		virtual ~Component() = default;
 
 		virtual void Update(float deltaTime) {}
+
+	protected:
+		GameObject* parentObj;
 	};
 
 	struct Transform : public Component {
@@ -25,7 +31,7 @@ namespace Core {
 		Vec2f scale;
 		float rotation;
 
-		Transform(Vec2f position = { 0, 0 }, Vec2f scale = { 1, 1 }, float rotation = 0.0f) : position(position), scale(scale), rotation(rotation) {}
+		Transform(GameObject* parentObj, Vec2f position = { 0, 0 }, Vec2f scale = { 1, 1 }, float rotation = 0.0f) : Component(parentObj), position(position), scale(scale), rotation(rotation) {}
 	};
 
 	// TODO: Future - SpriteRenderer should have z-index
@@ -33,7 +39,7 @@ namespace Core {
 		SDL_Color color;
 		Texture* texture;
 
-		SpriteRenderer(Texture* texture = nullptr, SDL_Color color = { 255, 255, 255, 255 }) : color(color), texture(texture) {}
+		SpriteRenderer(GameObject* parentObj, Texture* texture = nullptr, SDL_Color color = { 255, 255, 255, 255 }) : Component(parentObj), color(color), texture(texture) {}
 	};
 	
 	class GameObject {
@@ -45,10 +51,7 @@ namespace Core {
 		};
 		virtual ~GameObject() = default;
 
-		// TODO: Should GameObject have central client side Update if it has a component system?
-		virtual void Update(float deltaTime) {};
 		void UpdateBase(float deltaTime) {
-			Update(deltaTime);
 			for (auto& [type, component] : m_components) {
 				if(component->active)
 					component->Update(deltaTime);
@@ -60,8 +63,11 @@ namespace Core {
 			std::type_index type = typeid(T);
 			if (m_components.contains(type)) return nullptr;
 
-			m_components[type] = std::make_unique<T>(std::forward<Args>(args)...);
-			return static_cast<T*>(m_components[type].get());
+			auto component = std::make_unique<T>(this, std::forward<Args>(args)...);
+			T* raw = static_cast<T*>(component.get());
+			m_components[type] = std::move(component);
+
+			return raw;
 		}
 
 		template<typename T>

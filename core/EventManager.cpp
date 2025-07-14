@@ -11,7 +11,6 @@ namespace Core {
 
 		// Reset keys
 		lastKeysPressed = keysPressed;
-		keysPressed.fill(false);
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
@@ -22,6 +21,9 @@ namespace Core {
 			case SDL_EVENT_KEY_DOWN:
 				if (!event.key.repeat)
 					keysPressed[event.key.scancode] = true;
+				break;
+			case SDL_EVENT_KEY_UP:
+				keysPressed[event.key.scancode] = false;
 				break;
 			}
 		}

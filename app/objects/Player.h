@@ -7,5 +7,8 @@ namespace DK {
 	public:
 		Player();
 		~Player();
+
+	private:
+		Core::Transform* transform;
 	};
 }

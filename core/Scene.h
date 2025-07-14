@@ -13,7 +13,7 @@ namespace Core {
 			Update(deltaTime);
 			for (GameObject* obj : m_gameObjects) {
 				if(obj->active)
-					obj->Update(deltaTime);
+					obj->UpdateBase(deltaTime);
 			}
 		}
 

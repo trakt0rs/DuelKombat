@@ -16,7 +16,7 @@ namespace Core {
 
 	void GameObject::UpdateBase(float deltaTime) {
 		for (auto& [type, component] : m_components) {
-			if (component->active)
+			if (component->active)	// Skip inactive components
 				component->Update(deltaTime);
 		}
 	}

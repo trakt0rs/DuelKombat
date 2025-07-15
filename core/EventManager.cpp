@@ -5,25 +5,25 @@ namespace Core {
 	EventManager* EventManager::instance = nullptr;
 
 
-	EventManager::EventManager() : lastKeysPressed(), keysPressed(), shouldQuit(false) {}
+	EventManager::EventManager() : m_previousKeysPressed(), m_currentKeysPressed(), m_shouldQuit(false) {}
 
 	void EventManager::PollEvents() {
 
 		// Reset keys
-		lastKeysPressed = keysPressed;
+		m_previousKeysPressed = m_currentKeysPressed;
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_EVENT_QUIT:
-				shouldQuit = true;
+				m_shouldQuit = true;
 				break;
 			case SDL_EVENT_KEY_DOWN:
 				if (!event.key.repeat)
-					keysPressed[event.key.scancode] = true;
+					m_currentKeysPressed[event.key.scancode] = true;
 				break;
 			case SDL_EVENT_KEY_UP:
-				keysPressed[event.key.scancode] = false;
+				m_currentKeysPressed[event.key.scancode] = false;
 				break;
 			}
 		}

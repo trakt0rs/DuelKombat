@@ -5,6 +5,10 @@
 
 namespace Core {
 
+	/// <summary>
+	/// Singleton class responsible for handling input and SDL events.
+	/// Tracks keyboard state across frames to detect key presses, releases, and holds.
+	/// </summary>
 	class EventManager {
 	public:
 		static EventManager& GetInstance() {
@@ -14,12 +18,16 @@ namespace Core {
 			return *instance;
 		}
 
+		/// <summary>
+		/// Polls SDL events and updates key state buffers.
+		/// Should be called once per frame before processing events.
+		/// </summary>
 		void PollEvents();
 
-		inline bool IsKeyPressed(SDL_Scancode key) const { return keysPressed[key] && !lastKeysPressed[key]; }
-		inline bool IsKeyReleased(SDL_Scancode key) const { return !keysPressed[key] && lastKeysPressed[key]; }
-		inline bool IsKeyHeld(SDL_Scancode key) const { return keysPressed[key]; }
-		inline bool ShouldQuit() const { return shouldQuit; }
+		inline bool IsKeyPressed(SDL_Scancode key) const { return m_currentKeysPressed[key] && !m_previousKeysPressed[key]; }
+		inline bool IsKeyReleased(SDL_Scancode key) const { return !m_currentKeysPressed[key] && m_previousKeysPressed[key]; }
+		inline bool IsKeyHeld(SDL_Scancode key) const { return m_currentKeysPressed[key]; }
+		inline bool ShouldQuit() const { return m_shouldQuit; }
 		
 	private:
 		EventManager();
@@ -31,10 +39,9 @@ namespace Core {
 		static EventManager* instance;
 
 	private:
-		// For capturing all keys 
-		std::array<bool, SDL_SCANCODE_COUNT> keysPressed;
-		std::array<bool, SDL_SCANCODE_COUNT> lastKeysPressed;
+		std::array<bool, SDL_SCANCODE_COUNT> m_currentKeysPressed;
+		std::array<bool, SDL_SCANCODE_COUNT> m_previousKeysPressed;
 
-		bool shouldQuit;
+		bool m_shouldQuit;
 	};
 }

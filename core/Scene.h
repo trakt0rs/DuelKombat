@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <memory>
+
 #include "GameObject.h"
 
 namespace Core {
@@ -9,22 +12,15 @@ namespace Core {
 		virtual ~Scene() = default;
 
 		virtual void Update(float deltaTime) {};
-		void UpdateBase(float deltaTime) {
-			Update(deltaTime);
-			for (GameObject* obj : m_gameObjects) {
-				if(obj->active)
-					obj->UpdateBase(deltaTime);
-			}
-		}
+		virtual void OnEnter() {};
+		virtual void OnExit() {};
 
-		void AddGameObject(GameObject* obj) {
-			m_gameObjects.push_back(obj);
-		}
-		// TODO: Scene should have OnExit() OnEnter()
+		void UpdateBase(float deltaTime);
 
-		const std::vector<GameObject*>& GetGameObjects() const { return m_gameObjects; }
-	private:
-		// TODO: Should not contain raw pointers, Future - replaced by GameObjectManager
-		std::vector<GameObject*> m_gameObjects;
+		const std::vector<std::unique_ptr<GameObject>>& GetGameObjects() const;
+		void AddGameObject(std::unique_ptr<GameObject> obj);
+
+	public:
+		std::vector<std::unique_ptr<GameObject>> m_gameObjects;
 	};
 }

@@ -56,6 +56,10 @@ namespace Core {
 	}
 
 	void Application::SetActiveScene(Scene* scene) {
+		if (m_activeScene) {
+			m_activeScene->OnExit();
+		}
 		m_activeScene = scene;
+		scene->OnEnter();
 	}
 }

@@ -7,5 +7,7 @@ namespace DK {
 	public:
 		FightScene();
 		~FightScene();
+
+		void OnEnter() override;
 	};
 }

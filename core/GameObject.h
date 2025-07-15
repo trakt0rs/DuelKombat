@@ -17,7 +17,7 @@ namespace Core {
 		bool active = true;	// Component gets updated only if its active and its GameObject is active
 
 		Component() = delete; // Prevent accidental usage
-		Component(GameObject* parentObj) : parentObj(parentObj) {}
+		Component(GameObject* parentObj);
 		virtual ~Component() = default;
 
 		virtual void Update(float deltaTime) {}
@@ -31,7 +31,7 @@ namespace Core {
 		Vec2f scale;
 		float rotation;
 
-		Transform(GameObject* parentObj, Vec2f position = { 0, 0 }, Vec2f scale = { 1, 1 }, float rotation = 0.0f) : Component(parentObj), position(position), scale(scale), rotation(rotation) {}
+		Transform(GameObject* parentObj, Vec2f position = { 0, 0 }, Vec2f scale = { 1, 1 }, float rotation = 0.0f);
 	};
 
 	// TODO: Future - SpriteRenderer should have z-index
@@ -39,24 +39,21 @@ namespace Core {
 		SDL_Color color;
 		Texture* texture;
 
-		SpriteRenderer(GameObject* parentObj, Texture* texture = nullptr, SDL_Color color = { 255, 255, 255, 255 }) : Component(parentObj), color(color), texture(texture) {}
+		SpriteRenderer(GameObject* parentObj, Texture* texture = nullptr, SDL_Color color = { 255, 255, 255, 255 });
 	};
 	
 	class GameObject {
 	public:
 		bool active = true;	// GameObject gets updated only if its active
+		bool destroyFlag = false;
 
-		GameObject() {
-			AddComponent<Transform>(); // GameObject on default has Transform component
-		};
+		GameObject();
 		virtual ~GameObject() = default;
 
-		void UpdateBase(float deltaTime) {
-			for (auto& [type, component] : m_components) {
-				if(component->active)
-					component->Update(deltaTime);
-			}
-		}
+		void UpdateBase(float deltaTime);
+
+		void Destroy() { destroyFlag = true; }
+		bool ShouldDestroy() { return destroyFlag; }
 
 		template<typename T, typename... Args>
 		T* AddComponent(Args&&... args) {

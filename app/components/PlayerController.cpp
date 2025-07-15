@@ -14,5 +14,9 @@ namespace DK {
 		float direction = static_cast<float>(Core::EventManager::GetInstance().IsKeyHeld(SDL_SCANCODE_D)) - static_cast<float>(Core::EventManager::GetInstance().IsKeyHeld(SDL_SCANCODE_A));
 
 		m_transform->position.x += direction * deltaTime * 100;
+
+		if (m_transform->position.x > 600.0f) {
+			parentObj->Destroy();
+		}
 	}
 }

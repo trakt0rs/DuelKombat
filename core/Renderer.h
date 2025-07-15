@@ -13,7 +13,7 @@ namespace Core {
 		~Renderer();
 
 		void RenderClear();
-		void Render(const std::vector<GameObject*>& gameObjects) const;
+		void Render(const std::vector<std::unique_ptr<GameObject>>& gameObjects) const;
 		void RenderPresent();
 
 	private:

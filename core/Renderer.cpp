@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
 #include <iostream>
+#include <memory>
 
 #include "AssetManager.h"
 
@@ -23,7 +24,7 @@ namespace Core {
 		SDL_RenderClear(m_renderer);
 	}
 
-	void Renderer::Render(const std::vector<GameObject*>& gameObjects) const {
+	void Renderer::Render(const std::vector<std::unique_ptr<GameObject>>& gameObjects) const {
 		for (const auto& gameObject : gameObjects) {
 			if (!gameObject->active) continue;
 			SpriteRenderer* spriteRenderer = gameObject->GetComponent<SpriteRenderer>();
